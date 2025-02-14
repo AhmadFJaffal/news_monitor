@@ -44,7 +44,6 @@ async function main() {
   console.log("Created users:", { user1, user2, user3 });
 
   // Create 1000+ posts
-  const users = [user1, user2, user3];
   const createdPosts: Array<{
     id: number;
     title: string;

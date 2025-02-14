@@ -46,7 +46,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                   <Button
                     onClick={handleLogout}
                     variant="secondary"
-                    className="ml-4 px-4 py-2 text-sm"
+                    className="ml-4 px-4 py-2 text-sm cursor-pointer"
                   >
                     Logout
                   </Button>

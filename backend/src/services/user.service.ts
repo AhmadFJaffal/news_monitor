@@ -36,7 +36,7 @@ export class UserService {
       where: { username },
     });
 
-    return user; // Don't transform for login checks
+    return user;
   }
 
   async findById(id: number): Promise<UserResponse | null> {

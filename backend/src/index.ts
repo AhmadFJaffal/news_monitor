@@ -6,7 +6,7 @@ import { corsOptions } from "./config/cors";
 
 const app = express();
 
-// CORS must be configured before any routes
+// CORS must be put first before any other middleware
 app.use(cors(corsOptions));
 
 // Cookie parser middleware

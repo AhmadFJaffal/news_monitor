@@ -36,7 +36,7 @@ export const authenticate = (
       iat: number; // Issued at timestamp
     };
 
-    // Check if token is nearing expiration (e.g., less than 30 minutes remaining)
+    // Check if token is nearing expiration
     const timeUntilExpiry = decoded.exp - Math.floor(Date.now() / 1000);
     const renewalThreshold = 30 * 60; // 30 minutes in seconds
 

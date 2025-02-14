@@ -12,7 +12,7 @@ export class AuthService {
     const user = await this.prisma.user.findUnique({
       where: {
         id: userId,
-        isActive: true, // Optionally check if user is still active
+        isActive: true, // check if user is still active
       },
     });
 

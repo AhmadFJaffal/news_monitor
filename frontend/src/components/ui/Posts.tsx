@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
-import { Search } from "lucide-react";
+import { Search, X } from "lucide-react";
 import Layout from "./Layout";
 import api from "../../utils";
 import { useDebounce } from "../../hooks/useDebounce";
@@ -144,72 +144,109 @@ const Posts: React.FC = () => {
 
   return (
     <Layout>
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div ref={searchContainerRef} className="relative mb-6">
-          {" "}
-          <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-            <Search className="h-5 w-5 text-gray-400" />
-          </div>
-          <input
-            type="text"
-            placeholder="Search posts..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            onFocus={() => setShowSuggestions(true)}
-            className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-          />
-          {/* Search History Suggestions */}
-          {showSuggestions && searchHistory.length > 0 && (
-            <div className="absolute z-10 w-full mt-1 bg-white shadow-lg rounded-md border border-gray-200">
-              {searchHistory.map((term, index) => (
-                <div
-                  key={index}
-                  onClick={() => handleSearchClick(term)}
-                  className="px-4 py-2 hover:bg-gray-100 cursor-pointer text-sm"
-                >
-                  {term}
+      <div className="flex flex-col h-[calc(100vh-64px)]">
+        {/* Sticky Search Bar */}
+        <div className="sticky top-0 z-50 bg-white/80 backdrop-blur-sm border-b border-gray-200 shadow-sm">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+            <div className="flex items-center space-x-4">
+              {/* Search Input Container */}
+              <div ref={searchContainerRef} className="relative flex-1">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <Search className="h-5 w-5 text-gray-400" />
                 </div>
-              ))}
+                <input
+                  type="text"
+                  placeholder="Search posts..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  onFocus={() => setShowSuggestions(true)}
+                  className="block w-full pl-10 pr-10 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                />
+                {searchTerm && (
+                  <button
+                    onClick={() => setSearchTerm("")}
+                    className="absolute inset-y-0 right-0 pr-3 flex items-center"
+                    aria-label="Clear search"
+                  >
+                    <X className="h-5 w-5 text-gray-400 hover:text-gray-600" />
+                  </button>
+                )}
+              </div>
+
+              {/* Search History */}
+              {showSuggestions && searchHistory.length > 0 && (
+                <div className="flex items-center space-x-2 overflow-x-auto">
+                  {searchHistory.map((term, index) => (
+                    <button
+                      key={index}
+                      onClick={() => handleSearchClick(term)}
+                      className="flex-none px-3 py-1.5 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-full text-sm whitespace-nowrap transition-colors"
+                    >
+                      {term}
+                    </button>
+                  ))}
+                </div>
+              )}
             </div>
-          )}
+          </div>
         </div>
 
-        <SkeletonTheme baseColor="#f3f4f6" highlightColor="#e5e7eb">
-          {loading && posts.length === 0 ? (
-            <PostsGridSkeleton />
-          ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {posts.map((post, index) => (
-                <div
-                  key={post.id}
-                  ref={index === posts.length - 1 ? lastPostRef : undefined}
-                >
-                  <PostCard
-                    title={post.title}
-                    content={post.content}
-                    createdAt={post.createdAt}
-                    tags={post.tags}
-                    searchTerm={debouncedSearchTerm}
-                  />
+        {/* Scrollable Posts Area */}
+        <div className="flex-1 overflow-y-auto">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <SkeletonTheme baseColor="#f3f4f6" highlightColor="#e5e7eb">
+              {loading && posts.length === 0 ? (
+                <PostsGridSkeleton />
+              ) : (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {posts.map((post, index) => (
+                    <div
+                      key={post.id}
+                      ref={index === posts.length - 1 ? lastPostRef : undefined}
+                    >
+                      <PostCard
+                        title={post.title}
+                        content={post.content}
+                        createdAt={post.createdAt}
+                        tags={post.tags}
+                        searchTerm={debouncedSearchTerm}
+                      />
+                    </div>
+                  ))}
                 </div>
-              ))}
-            </div>
-          )}
-        </SkeletonTheme>
+              )}
+            </SkeletonTheme>
 
-        {loading && posts.length > 0 && (
-          <div className="flex justify-center my-8">
-            <PostsGridSkeleton />
+            {loading && posts.length > 0 && (
+              <div className="flex justify-center my-8">
+                <PostsGridSkeleton />
+              </div>
+            )}
+
+            {!loading && posts.length === 0 && (
+              <div className="text-center text-gray-500 my-8">
+                No posts found
+              </div>
+            )}
           </div>
-        )}
+        </div>
 
-        {!loading && posts.length === 0 && (
-          <div className="text-center text-gray-500 my-8">No posts found</div>
-        )}
-
-        <div className="mt-6 text-center text-gray-600">
-          {totalResults > 0 &&
-            `Showing ${posts.length} of ${totalResults} results`}
+        {/* Fixed Results Counter */}
+        <div className="border-t border-gray-200 bg-white">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+            <div className="flex justify-between items-center text-sm text-gray-600">
+              <span>
+                {totalResults > 0
+                  ? `Showing ${posts.length} of ${totalResults} results`
+                  : "No results"}
+              </span>
+              {totalResults > 0 && (
+                <span>
+                  Page {page} of {Math.ceil(totalResults / 10)}
+                </span>
+              )}
+            </div>
+          </div>
         </div>
       </div>
     </Layout>

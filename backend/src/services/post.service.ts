@@ -50,32 +50,6 @@ export class PostService {
     };
   }
 
-  async findById(id: number): Promise<PostResponse | null> {
-    const post = await this.prisma.post.findUnique({
-      where: { id },
-    });
-
-    if (!post) return null;
-    return postResponseSchema.parse(post);
-  }
-
-  async updatePost(id: number, data: UpdatePost): Promise<PostResponse> {
-    const validatedData = updatePostSchema.parse(data);
-
-    const post = await this.prisma.post.update({
-      where: { id },
-      data: validatedData,
-    });
-
-    return postResponseSchema.parse(post);
-  }
-
-  async deletePost(id: number): Promise<void> {
-    await this.prisma.post.delete({
-      where: { id },
-    });
-  }
-
   async searchPosts(searchTerm: string, page: number = 1, limit: number = 10) {
     const skip = (page - 1) * limit;
 
@@ -114,5 +88,31 @@ export class PostService {
         totalPages: Math.ceil(total / limit),
       },
     };
+  }
+
+  async findById(id: number): Promise<PostResponse | null> {
+    const post = await this.prisma.post.findUnique({
+      where: { id },
+    });
+
+    if (!post) return null;
+    return postResponseSchema.parse(post);
+  }
+
+  async updatePost(id: number, data: UpdatePost): Promise<PostResponse> {
+    const validatedData = updatePostSchema.parse(data);
+
+    const post = await this.prisma.post.update({
+      where: { id },
+      data: validatedData,
+    });
+
+    return postResponseSchema.parse(post);
+  }
+
+  async deletePost(id: number): Promise<void> {
+    await this.prisma.post.delete({
+      where: { id },
+    });
   }
 }

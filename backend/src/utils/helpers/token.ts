@@ -7,9 +7,7 @@ interface User {
   update?: (data: { token_in_use: string }) => Promise<void>;
 }
 
-/**
- * Sets an access token as an HTTP-only cookie and updates the user's token_in_use field
- */
+// set an access token as an HTTP-only cookie
 export const setAccessToken = async (
   res: Response,
   user: User
@@ -24,11 +22,6 @@ export const setAccessToken = async (
       { expiresIn: "3h" }
     );
 
-    // If the user model has a token_in_use field, update it
-    if (user.update) {
-      await user.update({ token_in_use: accessToken });
-    }
-
     res.cookie("accessToken", accessToken, {
       httpOnly: true,
       secure: true,
@@ -41,9 +34,7 @@ export const setAccessToken = async (
   }
 };
 
-/**
- * Extracts the access token from cookies in the request
- */
+// Extracts the access token from cookies in the request
 export const cookieExtractor = (req: {
   cookies?: { [key: string]: string };
 }): string | null => {
@@ -53,9 +44,7 @@ export const cookieExtractor = (req: {
   return null;
 };
 
-/**
- * Clears the access token cookie
- */
+// Clears the access token cookie
 export const clearAccessToken = (res: Response): void => {
   res.cookie("accessToken", "", {
     httpOnly: true,
@@ -72,9 +61,7 @@ export interface JWTPayload {
   exp?: number;
 }
 
-/**
- * Verifies and decodes the JWT token
- */
+// Verifies and decodes the JWT token
 export const verifyToken = (token: string): JWTPayload => {
   return jwt.verify(
     token,
