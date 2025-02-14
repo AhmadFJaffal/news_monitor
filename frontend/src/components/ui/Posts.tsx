@@ -171,22 +171,22 @@ const Posts: React.FC = () => {
                     <X className="h-5 w-5 text-gray-400 hover:text-gray-600" />
                   </button>
                 )}
-              </div>
 
-              {/* Search History */}
-              {showSuggestions && searchHistory.length > 0 && (
-                <div className="flex items-center space-x-2 overflow-x-auto">
-                  {searchHistory.map((term, index) => (
-                    <button
-                      key={index}
-                      onClick={() => handleSearchClick(term)}
-                      className="flex-none px-3 py-1.5 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-full text-sm whitespace-nowrap transition-colors"
-                    >
-                      {term}
-                    </button>
-                  ))}
-                </div>
-              )}
+                {/* Move Search Suggestions Here */}
+                {showSuggestions && searchHistory.length > 0 && (
+                  <div className="absolute z-10 mt-2 w-full bg-white border border-gray-200 rounded-md shadow-lg">
+                    {searchHistory.map((term, index) => (
+                      <button
+                        key={index}
+                        onClick={() => handleSearchClick(term)}
+                        className="block w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 text-left"
+                      >
+                        {term}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         </div>
